@@ -20,7 +20,7 @@ plt.figure(1)
 plt.imshow(gray_img, cmap='gray')
 plt.show()
 
-# (2) thresholding image
+# (2) thresholded binary image
 bin_img = gray_img.copy()
 
 threshold = 200
@@ -31,7 +31,7 @@ plt.figure(2)
 plt.imshow(bin_img, cmap='gray')
 plt.show()
 
-#%% 2. Delete all the regions which are less than 10,000
+# 2. Delete all the regions which are less than 10,000
 
 connectivity_4 = np.array([[0,1,0],
                            [1,0,0],
@@ -73,8 +73,8 @@ def connected_component_labeling(bin_img, connectivity=connectivity_8):
                     if len(uni_L)>1:
                         for i, e in enumerate(equivalent):
                             if uni_L[0] in e:
-                                e.extend(uni_L[1:])
-                                equivalent[i] = list(sorted(set(e)))                       
+                                equivalent[i].extend(uni_L[1:])
+                                equivalent[i] = list(sorted(set(equivalent[i])))                       
     # 2nd pass
     for e in equivalent:
         for f in reversed(e):
@@ -97,34 +97,36 @@ def threshold_labels(labels, threshold=10000):
             
     return thr_labels
         
-labels = connected_component_labeling(bin_img, connectivity_4)
-thr_labels = threshold_labels(labels)
-unique_elements, counts_elements = np.unique(thr_labels, return_counts=True)
+labels_4 = connected_component_labeling(bin_img, connectivity_4)
+thr_labels_4 = threshold_labels(labels_4)
 
 plt.figure(3)
 plt.title('4-connectivity')
-plt.imshow(thr_labels)
+plt.imshow(thr_labels_4)
 plt.show()
 
-# 3. Count the number of remaining regions
-print('\n')
-print('4-connectivity')
-for i in unique_elements:
-    print('label :', i)
-    print('number of pixel :', counts_elements[i])
-
-labels = connected_component_labeling(bin_img, connectivity_8)
-thr_labels = threshold_labels(labels)
-unique_elements, counts_elements = np.unique(thr_labels, return_counts=True)
+labels_8 = connected_component_labeling(bin_img, connectivity_8)
+thr_labels_8 = threshold_labels(labels_8)
 
 plt.figure(4)
 plt.title('8-connectivity')
-plt.imshow(thr_labels)
+plt.imshow(thr_labels_8)
 plt.show()
 
 # 3. Count the number of remaining regions
+    
+_, counts_elements_4 = np.unique(thr_labels_4, return_counts=True)
+
+print('\n')
+print('4-connectivity')
+for l, c in enumerate(counts_elements_4):
+    print('label :', l)
+    print('number of pixel :', c)
+    
+_, counts_elements_8 = np.unique(thr_labels_8, return_counts=True)
+    
 print('\n')
 print('8-connectivity')
-for i in unique_elements:
-    print('label :', i)
-    print('number of pixel :', counts_elements[i])
+for l, c in enumerate(counts_elements_8):
+    print('label :', l)
+    print('number of pixel :', c)
