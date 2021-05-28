@@ -1,5 +1,7 @@
 # Histogram equalization
 
+Detail : https://jstar0525.tistory.com/7
+
 ## Input image
 <img src="./doc/origin_hist1.png" ></img>
 <img src="./doc/origin_img1.png" ></img>

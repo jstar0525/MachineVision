@@ -1,5 +1,7 @@
 # Distance transform
 
+Detail : https://jstar0525.tistory.com/3
+
 ## Input image
 <img src="./doc/origin_image.png" ></img>
 
