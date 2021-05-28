@@ -1,6 +1,6 @@
 # MachineVision
 
-## [1. Connected-component labeling](./01%20Conneted-component%20labeling)
+## [1. Connected-component labeling](./01%20Connected-component%20labeling)
 
 
 ## 2. Distance transform
