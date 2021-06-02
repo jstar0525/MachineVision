@@ -1,4 +1,4 @@
-# Edge detection
+# Frequency domain filtering
 
 Detail : https://jstar0525.tistory.com/59
 
