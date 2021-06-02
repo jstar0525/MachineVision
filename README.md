@@ -16,3 +16,6 @@
 
 
 ## [6. Edge detection](./06%20Edge%20Detection)
+
+
+## [7. Frequency domain filtering](./07%20Frequency%20domain%20filtering)
