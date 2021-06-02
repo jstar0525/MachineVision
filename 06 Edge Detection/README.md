@@ -1,5 +1,7 @@
 # Edge detection
 
+Detail : https://jstar0525.tistory.com/53
+
 ## Input image
 <img src="./doc/origin_img.png" ></img>
 
