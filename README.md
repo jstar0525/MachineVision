@@ -21,7 +21,7 @@
 ## [7. Frequency domain filtering](./07%20Frequency%20domain%20filtering)
 
 
-## [8. Frequency domain filtering](./08%20Convolution%20theorem)
+## [8. Convolution theorem](./08%20Convolution%20theorem)
 
 
 ## [9. Hough transform](./09%20Hough%20transform)
