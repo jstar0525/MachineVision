@@ -17,8 +17,8 @@ def cal_D(c_row, c_col, r, c):
     s = (c_row-r)**2 + (c_col-c)**2
     return s**(1/2)
 
-def filter_radius(gray_img, fshift, rad, low=True):
-    rows, cols = gray_img.shape
+def filter_radius(fshift, rad, low=True):
+    rows, cols = fshift.shape
     c_row, c_col = int(rows/2), int(cols/2)    # center
     
     filter_fshift = fshift.copy()
@@ -27,10 +27,10 @@ def filter_radius(gray_img, fshift, rad, low=True):
         for c in range(cols):
             if low:    # low-pass filter
                 if cal_D(c_row, c_col, r, c) > rad:
-                    filter_fshift[r,c] = 1
+                    filter_fshift[r,c] = 0
             else:      # high-pass filter
                 if cal_D(c_row, c_col, r, c) < rad:
-                    filter_fshift[r,c] = 1
+                    filter_fshift[r,c] = 0
     
     return filter_fshift
 
@@ -44,7 +44,7 @@ plt.show()
 
 # fft
 f = np.fft.fft2(gray_img)
-magnitude_f = 20*np.log(np.abs(f))
+magnitude_f = np.log(np.abs(f)+1)
 
 plt.figure()
 plt.imshow(magnitude_f, cmap='gray')
@@ -52,15 +52,15 @@ plt.show()
 
 # fftshift
 fshift = np.fft.fftshift(f)
-magnitude_fshift = 20*np.log(np.abs(fshift))
+magnitude_fshift = np.log(np.abs(fshift)+1)
 
 plt.figure()
 plt.imshow(magnitude_fshift, cmap='gray')
 plt.show()
 
 # low-pass filter
-low_fshift = filter_radius(gray_img, fshift, rad=50, low=True)
-low_pass_magnitude = 20*np.log(np.abs(low_fshift))
+low_fshift = filter_radius(fshift, rad=50, low=True)
+low_pass_magnitude = np.log(np.abs(low_fshift)+1)
 
 plt.figure()
 plt.imshow(low_pass_magnitude, cmap='gray')
@@ -76,8 +76,8 @@ plt.imshow(low_img, cmap='gray')
 plt.show()
 
 # high-pass filter
-high_fshift = filter_radius(gray_img, fshift, rad=50, low=False)
-high_pass_magnitude = 20*np.log(np.abs(high_fshift))
+high_fshift = filter_radius(fshift, rad=50, low=False)
+high_pass_magnitude = np.log(np.abs(high_fshift)+1)
 
 plt.figure()
 plt.imshow(high_pass_magnitude, cmap='gray')
