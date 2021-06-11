@@ -16,7 +16,7 @@ h(x,y) below is the Sobel mask for horizontal edge detection.
    Let the resultant image be i’’(x,y).  
    And, make a comparison between the above two images, i’(x,y) and i’’(x,y).
 
-                    h(x,y)=
+                     h(x,y) =
                             1    2    1
                             0    0    0
                            -1   -2   -1
@@ -26,28 +26,25 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 
-#%% read image
-
+# read image
 img = Image.open('Rose-BMP.bmp').convert('L')
 i = np.array(img)
 
+# make a odd shape image
 if i.shape[0]%2 == 0:
     i = i[:i.shape[0]-1,:]
 if i.shape[1]%2 == 0:
     i = i[:,:i.shape[1]-1]
 
-plt.figure()
 plt.imshow(i, cmap='gray')
 plt.show()
 
 #%% fft
 
 I = np.fft.fft2(i)
-I = np.fft.fftshift(I)
-magnitude_I = np.log(np.abs(I)+1)
+I_s = np.fft.fftshift(I)
 
-plt.figure()
-plt.imshow(magnitude_I, cmap='gray')
+plt.imshow(np.log(np.abs(I_s)+1), cmap='gray')
 plt.show()
 
 #%% sobel
@@ -56,64 +53,49 @@ h = np.array([[ 1, 2, 1],
               [ 0, 0, 0],
               [-1,-2,-1]])
 
-#plt.figure()
-#plt.imshow(abs(h), cmap='gray')
-#plt.show()
+def fft_filter(h, filter_size=1023, crop_size=1023):
 
-h_p = np.pad(h, ((1000,1000),(1000,1000)), 'constant', constant_values=0)
+    if crop_size >= filter_size:
+        filter_size = crop_size
 
-H = np.fft.fft2(h_p)
-H = np.fft.fftshift(H)
-magnitude_H = np.log(np.abs(H)+1)
+    p = int((filter_size-h.shape[0])/2)
+    h_p = np.pad(h, ((p,p),(p,p)), 'constant', constant_values=0)
+    
+    H = np.fft.fft2(h_p)
+    
+    if crop_size >= filter_size:
+        return H
+    else:
+        start = int((filter_size-crop_size)/2)
+        last = int(start+crop_size)
+        
+        return H[start:last,start:last]
+    
+H = fft_filter(h, filter_size=1023, crop_size=1023)
+H_s = np.fft.fftshift(H)
 
-plt.figure()
-plt.imshow(magnitude_H[490:1513,490:1513], cmap='gray')
+plt.imshow(np.log(np.abs(H_s)+1), cmap='gray')
 plt.show()
 
 #%% element-wise multiplication
 
-def cal_D(c_row, c_col, r, c):
-    s = (c_row-r)**2 + (c_col-c)**2
-    return s**(1/2)
+I_prime = I_s*np.log(np.abs(H_s)+1)
 
-def filter_radius(fshift, rad, low=True):
-    rows, cols = fshift.shape
-    c_row, c_col = int(rows/2), int(cols/2)    # center
-    
-    filter_fshift = fshift.copy()
-    
-    for r in range(rows):
-        for c in range(cols):
-            if low:    # low-pass filter
-                if cal_D(c_row, c_col, r, c) > rad:
-                    filter_fshift[r,c] = 1
-            else:      # high-pass filter
-                if cal_D(c_row, c_col, r, c) < rad:
-                    filter_fshift[r,c] = 1
-    
-    return filter_fshift
-
-low_fshift = filter_radius(I, rad=50, low=True)
-
-I_prime = low_fshift
-plt.figure()
 plt.imshow(np.log(abs(I_prime)+1), cmap='gray')
 plt.show()
 
 #%% inverse FFT
 
-f_i_prime = np.fft.ifftshift(I_prime)
-i_prime = np.fft.ifft2(f_i_prime)
-i_prime = np.abs(i_prime)*1000000
+i_prime = np.fft.ifftshift(I_prime)
+i_prime = np.fft.ifft2(i_prime)
 i_prime[i_prime>255] = 255
 
-plt.figure()
-plt.imshow(np.log(i_prime+1), cmap='gray')
+plt.imshow(np.abs(i_prime), cmap='gray')
 plt.show()
 
 #%% Spatail domain filtering
 
-def conv_2d(img, i_filter, stride):
+def conv(img, i_filter, stride):
     
     result_shape = tuple( np.int64( 
         (np.array(img.shape)-np.array(i_filter.shape))/stride+1 
@@ -130,8 +112,8 @@ def conv_2d(img, i_filter, stride):
     
     return result
 
-result = conv_2d(i, h, stride=1)
+result = conv(i, h, stride=1)
 
-plt.figure()
 plt.imshow(result, cmap='gray')
 plt.show()
+
