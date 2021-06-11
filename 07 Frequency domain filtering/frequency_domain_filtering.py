@@ -38,7 +38,6 @@ def filter_radius(fshift, rad, low=True):
 img = Image.open('Rose-BMP.bmp').convert('L')
 gray_img = np.array(img)
 
-plt.figure()
 plt.imshow(gray_img, cmap='gray')
 plt.show()
 
@@ -46,7 +45,6 @@ plt.show()
 f = np.fft.fft2(gray_img)
 magnitude_f = np.log(np.abs(f)+1)
 
-plt.figure()
 plt.imshow(magnitude_f, cmap='gray')
 plt.show()
 
@@ -54,7 +52,6 @@ plt.show()
 fshift = np.fft.fftshift(f)
 magnitude_fshift = np.log(np.abs(fshift)+1)
 
-plt.figure()
 plt.imshow(magnitude_fshift, cmap='gray')
 plt.show()
 
@@ -62,7 +59,6 @@ plt.show()
 low_fshift = filter_radius(fshift, rad=50, low=True)
 low_pass_magnitude = np.log(np.abs(low_fshift)+1)
 
-plt.figure()
 plt.imshow(low_pass_magnitude, cmap='gray')
 plt.show()
 
@@ -71,7 +67,6 @@ low_ishift = np.fft.ifftshift(low_fshift)
 low_img = np.fft.ifft2(low_ishift)
 low_img = np.abs(low_img)
 
-plt.figure()
 plt.imshow(low_img, cmap='gray')
 plt.show()
 
@@ -79,7 +74,6 @@ plt.show()
 high_fshift = filter_radius(fshift, rad=50, low=False)
 high_pass_magnitude = np.log(np.abs(high_fshift)+1)
 
-plt.figure()
 plt.imshow(high_pass_magnitude, cmap='gray')
 plt.show()
 
@@ -88,6 +82,5 @@ high_ishift = np.fft.ifftshift(high_fshift)
 high_img = np.fft.ifft2(high_ishift)
 high_img = np.abs(high_img)
 
-plt.figure()
 plt.imshow(high_img, cmap='gray')
 plt.show()
